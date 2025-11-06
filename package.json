@@ -1,0 +1,39 @@
+{
+  "name": "travellers_app_backend",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src/**/*.js",
+    "start": "node ./src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleksPolishcuk/travellers_app_backend.git"
+  },
+  "keywords": [],
+  "author": "Aleks",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AleksPolishcuk/travellers_app_backend/issues"
+  },
+  "homepage": "https://github.com/AleksPolishcuk/travellers_app_backend#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "nodemon": "^3.1.10",
+    "pino-pretty": "^13.1.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "joi": "^18.0.1",
+    "mongoose": "^8.19.3",
+    "multer": "^2.0.2",
+    "pino-http": "^11.0.0"
+  }
+}
