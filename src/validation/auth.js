@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { EMAIL_VALID } from '../constants/auth.js';
+import { EMAIL_VALID } from '../constants/index.js';
 
 export const registerUserSchema = Joi.object({
   name: Joi.string().min(2).max(32).required(),
