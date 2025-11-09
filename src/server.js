@@ -4,13 +4,20 @@ import cookieParser from 'cookie-parser';
 import router from './routers/index.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import cors from 'cors';
 
-const PORT = Number(getEnvVar('PORT', 3000));
+const PORT = Number(getEnvVar('PORT',));
 
 export const startServer = () => {
   const app = express();
-
+  
   app.use(cookieParser());
+  app.use(cors({
+    origin: 'http://localhost:3000', 
+    credentials: true, 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  }));
+  
   app.use(
     express.json({
       type: ['application/json', 'application/vnd.api+json'],
