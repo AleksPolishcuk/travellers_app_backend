@@ -1,6 +1,6 @@
 import createHttpError from 'http-errors';
-import { SessionsCollection } from '../db/models/session.js';
-import { UsersCollection } from '../db/models/user.js';
+import { SessionsCollection } from '../database/models/session.js';
+import { UsersCollection } from '../database/models/user.js';
 
 export const authenticate = async (req, res, next) => {
   if (!req.cookies.accessToken) {
