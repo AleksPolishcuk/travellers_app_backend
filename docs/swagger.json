@@ -1,1 +1,577 @@
-{}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Contacts app",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "description": "This is a documentation of contacts app"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    },
+    {
+      "url": null
+    }
+  ],
+  "tags": [
+    {
+      "name": "Travellers",
+      "description": "Operations about travellers."
+    },
+    {
+      "name": "Auth",
+      "description": "Auth operations."
+    }
+  ],
+  "paths": {
+    "/stories": {
+      "get": {
+        "tags": [
+          "Travellers"
+        ],
+        "summary": "Get list of travellers",
+        "operationId": "getTravellers",
+        "description": "Get list of travellers with this endpoint",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "perPage",
+            "schema": {
+              "type": "integer",
+              "example": 9
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "example": "asc"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string"
+            },
+            "description": "All stories fields can be mentioned. Default value - _id",
+            "example": "_id"
+          },
+          {
+            "in": "query",
+            "name": "storyType",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by story type",
+            "example": "Europa"
+          },
+          {
+            "in": "query",
+            "name": "isFavourite",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter by favourite",
+            "example": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found stories!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found stories!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "page",
+                        "perPage",
+                        "totalItems",
+                        "totalPages",
+                        "hasNextPage",
+                        "hasPreviousPage"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/story"
+                          }
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "perPage": {
+                          "type": "integer",
+                          "example": 9
+                        },
+                        "totalItems": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Travellers"
+        ],
+        "summary": "Create a new traveller",
+        "operationId": "createTraveller",
+        "description": "Create a new traveller story",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/story"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Traveller successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Traveller successfully created"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/story"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "401": {
+              "$ref": "../../components/responses/401.yaml"
+            },
+            "500": {
+              "$ref": "../../components/responses/500.yaml"
+            },
+            "$ref": "#/components/responses/400"
+          }
+        }
+      }
+    },
+    "/stories/{storyId}": {
+      "get": {
+        "tags": [
+          "Travellers"
+        ],
+        "summary": "Get a traveller by ID",
+        "operationId": "getTravellerById",
+        "description": "Get a single traveller by its ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "storyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the traveller",
+            "example": "68ee414ab7ea35cf032c34df"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully found traveller",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found traveller"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/story"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Travellers"
+        ],
+        "summary": "Update a traveller by ID",
+        "operationId": "updateTraveller",
+        "description": "Update fields of a traveller story",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "storyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the traveller to update",
+            "example": "68ee414ab7ea35cf032c34df"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Fields to update",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "New title"
+                  },
+                  "article": {
+                    "type": "string",
+                    "example": "Updated description"
+                  },
+                  "img": {
+                    "type": "string",
+                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/newimage.png"
+                  },
+                  "category": {
+                    "type": "string",
+                    "example": "Europa"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Traveller successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Traveller successfully updated"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "story": {
+        "type": "object",
+        "required": [
+          "_id",
+          "img",
+          "title",
+          "article",
+          "category",
+          "ownerId",
+          "date",
+          "favoriteCount",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "_id": {
+            "description": "Story's id",
+            "type": "string",
+            "example": "68ee414ab7ea35cf032c34df"
+          },
+          "img": {
+            "description": "Link to story photo",
+            "type": "string",
+            "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
+          },
+          "title": {
+            "description": "Story's title",
+            "type": "string",
+            "example": "The name of the place"
+          },
+          "article": {
+            "description": "Story's description",
+            "type": "string",
+            "example": "The description of the place"
+          },
+          "category": {
+            "description": "Part of the world",
+            "type": "string",
+            "example": "Europa"
+          },
+          "ownerId": {
+            "description": "User's id who owns the story",
+            "type": "string",
+            "example": "68ee414ab7ea35cf032c34df"
+          },
+          "date": {
+            "description": "Date of the story",
+            "type": "string",
+            "example": "2025-03-06"
+          },
+          "favoriteCount": {
+            "description": "Favorite story",
+            "type": "integer",
+            "example": 2
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "data": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "description": "Error object produced by http-errors (may contain name, message, details, etc.)",
+                  "example": {
+                    "name": "BadRequest",
+                    "message": "Validation failed",
+                    "details": [
+                      "name is required",
+                      "title must be a string"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized — missing or invalid token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not found — no travellers found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "No travellers found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "error"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal server erro"
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Human-readable internal error message (from err.message)",
+                  "example": "Database connection failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

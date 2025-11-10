@@ -7,50 +7,25 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: This is a documentation of contacts app
 tags:
-  - name: Contacts
-    description: Operations about contacts.
+  - name: Travellers
+    description: Operations about travellers.
   - name: Auth
     description: Auth operations.
 servers:
   - url: http://localhost:4000
-  - url: https://nodejs-hw-mongodb-eo5d.onrender.com
+  - url: 
 paths:
-  /contacts:
+  /stories:
     get:
-      $ref: ../swagger/paths/contacts/get.yaml
+      $ref: ../swagger/paths/stories/get.yaml
     post:
-      $ref: ../swagger/paths/contacts/post.yaml
-  /contacts/{contactId}:
+      $ref: ../swagger/paths/stories/post.yaml
+  /stories/{storyId}:
     get:
-      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
+      $ref: ../swagger/paths/stories/{storyId}/get.yaml
     patch:
-      $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
-    delete:
-      $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
-  /auth/register:
-    post:
-      $ref: ../swagger/paths/auth/register.yaml
-  /auth/login:
-    post:
-      $ref: ../swagger/paths/auth/login.yaml
-  /auth/logout:
-    post:
-      $ref: ../swagger/paths/auth/logout.yaml
-  /auth/refresh:
-    post:
-      $ref: ../swagger/paths/auth/refresh.yaml
-  /auth/send-reset-email:
-    post:
-      $ref: ../swagger/paths/auth/send-reset-email.yaml
-  /auth/reset-pwd:
-    post:
-      $ref: ../swagger/paths/auth/reset-pwd.yaml
-  /auth/get-oauth-url:
-    get:
-      $ref: ../swagger/paths/auth/get-oauth-url.yaml
-  /auth/confirm-oauth:
-    post:
-      $ref: ../swagger/paths/auth/confirm-oauth.yaml  
+      $ref: ../swagger/paths/stories/{storyId}/path.yaml
+
 components:
   securitySchemes:
     bearerAuth:

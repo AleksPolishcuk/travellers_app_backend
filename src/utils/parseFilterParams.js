@@ -19,9 +19,9 @@ const parseBoolean = (value) => {
   return undefined;
 };
 
-export const parseFilterParams = (query) => {
+export const parseFilterParams = async (query) => {
   const { storyType, isFavourite } = query;
-  const parsedStoryType = parseStoryType(storyType);
+  const parsedStoryType = await parseStoryType(storyType);
   const parsedIsFavourite = parseBoolean(isFavourite);
 
   return {
