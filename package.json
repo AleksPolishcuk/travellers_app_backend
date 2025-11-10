@@ -45,6 +45,7 @@
     "multer": "^2.0.2",
     "nodemailer": "^7.0.10",
     "pino-http": "^11.0.0",
-    "set-cookie-parser": "^2.7.2"
+    "set-cookie-parser": "^2.7.2",
+    "swagger-ui-express": "^5.0.1"
   }
 }

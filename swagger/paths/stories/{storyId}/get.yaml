@@ -1,0 +1,41 @@
+tags:
+  - Travellers
+summary: Get a traveller by ID
+operationId: getTravellerById
+description: Get a single traveller by its ID
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: storyId
+    required: true
+    schema:
+      type: string
+    description: ID of the traveller
+    example: "68ee414ab7ea35cf032c34df"
+responses:
+  '200':
+    description: Successfully found traveller
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found traveller
+            data:
+              $ref: ../../../components/schemas/story.yaml
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

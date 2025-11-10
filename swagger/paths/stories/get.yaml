@@ -1,8 +1,8 @@
 tags:
-  - Stories
-summary: Get list of stories
-operationId: getStories
-description: 'Get list of stories with this endpoint'
+  - Travellers
+summary: Get list of travellers
+operationId: getTravellers
+description: 'Get list of travellers with this endpoint'
 security:
   - bearerAuth: []
 parameters:
@@ -10,38 +10,39 @@ parameters:
     name: page
     schema:
       type: integer
-    example: 1
+      example: 1
   - in: query
     name: perPage
     schema:
       type: integer
-      example: 10
-  - in: query
-    name: sortBy
-    schema:
-      type: string
-      example: 'name'
-    description: "All contacts's fields can be mentioned. Default value - _id"
+      example: 9
   - in: query
     name: sortOrder
     schema:
       type: string
       enum: ['asc', 'desc']
-      example: 'asc'
+      example: 'asc'    
   - in: query
-    name: contactType
+    name: sortBy
     schema:
       type: string
-      enum: ['work', 'home', 'personal']
-      example: 'work'
+    description: "All stories fields can be mentioned. Default value - _id"
+    example: '_id'
+  - in: query
+    name: storyType
+    schema:
+      type: string
+    description: Filter by story type
+    example: 'Europa'
   - in: query
     name: isFavourite
     schema:
       type: boolean
-      example: true
+    description: Filter by favourite
+    example: true
 responses:
   '200':
-    description: Successfully found contacts!
+    description: Successfully found stories!
     content:
       application/json:
         schema:
@@ -56,7 +57,7 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully found contacts!
+              example: Successfully found stories!
             data:
               type: object
               required:
@@ -71,26 +72,29 @@ responses:
                 data:
                   type: array
                   items:
-                    $ref: ../../components/schemas/contact.yaml
+                    $ref: '../../components/schemas/story.yaml'
                 page:
-                  type: number
-                  example: 3
+                  type: integer
+                  example: 1
                 perPage:
-                  type: number
-                  example: 7
-                totalItems:
-                  type: number
+                  type: integer
                   example: 9
+                totalItems:
+                  type: integer
+                  example: 25
                 totalPages:
-                  type: number
-                  example: 4
+                  type: integer
+                  example: 3
                 hasNextPage:
                   type: boolean
-                  example: false
+                  example: true
                 hasPreviousPage:
                   type: boolean
-                  example: true
+                  example: false
+                
   '401':
     $ref: '../../components/responses/401.yaml'
   '404':
     $ref: '../../components/responses/404.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'  

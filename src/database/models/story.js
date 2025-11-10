@@ -52,7 +52,7 @@
 
 import { model, Schema } from 'mongoose';
 
-const storiesSchema = new Schema(
+const travellersSchema = new Schema(
   {
     img: {
       type: String,
@@ -89,7 +89,10 @@ const storiesSchema = new Schema(
       default: 0,
     }
   },
-  { timestamps: true, versionKey: false, collation: 'stories' },
+  { timestamps: false, versionKey: false, collation: { locale: 'en', strength: 2 },
+  collection: 'travellers.travellers' },
 );
 
-export const StoriesCollection = model('trawels', storiesSchema);
+export const StoriesCollection = model('Traveller', travellersSchema);
+
+console.log(StoriesCollection.collection.name);
