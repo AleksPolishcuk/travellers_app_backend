@@ -1,5 +1,56 @@
+// import { model, Schema } from 'mongoose';
+// import { CATEGORIES } from '../../constants/index.js';
+
+// const storiesSchema = new Schema(
+//   {
+//     img: {
+//       type: String,
+//       required: false,
+//     },
+//     title: {
+//       type: String,
+//       required: true,
+//     },
+//     article: {
+//       type: String,
+//       required: true,
+//     },
+//     fullText: {
+//       type: String,
+//       required: true,
+//     },
+//     category: {
+//       type: String,
+//       enum: CATEGORIES,
+//       required: true,
+//     },
+//     rate: {
+//       type: Number,
+//       default: 0,
+//     },
+//     ownerId: {
+//       type: Schema.Types.ObjectId,
+//       ref: 'user',
+//       required: true,
+//     },
+
+//     date: {
+//       type: String,
+//       default: () => {
+//         const now = new Date();
+//         return now.toISOString().split('T')[0];
+//       },
+//     },
+//   },
+//   { timestamps: true, versionKey: false },
+// );
+
+// export const StoriesCollection = model('stories', storiesSchema);
+
+
+//?====================================
+
 import { model, Schema } from 'mongoose';
-import { CATEGORIES } from '../../constants/index.js';
 
 const storiesSchema = new Schema(
   {
@@ -10,30 +61,22 @@ const storiesSchema = new Schema(
     title: {
       type: String,
       required: true,
+      trim: true,
     },
     article: {
       type: String,
       required: true,
     },
-    fullText: {
-      type: String,
-      required: true,
-    },
     category: {
-      type: String,
-      enum: CATEGORIES,
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
       required: true,
-    },
-    rate: {
-      type: Number,
-      default: 0,
     },
     ownerId: {
       type: Schema.Types.ObjectId,
       ref: 'user',
       required: true,
     },
-
     date: {
       type: String,
       default: () => {
@@ -41,8 +84,12 @@ const storiesSchema = new Schema(
         return now.toISOString().split('T')[0];
       },
     },
+    favoriteCount: {
+      type: Number,
+      default: 0,
+    }
   },
-  { timestamps: true, versionKey: false },
+  { timestamps: true, versionKey: false, collation: 'stories' },
 );
 
-export const StoriesCollection = model('stories', storiesSchema);
+export const StoriesCollection = model('trawels', storiesSchema);

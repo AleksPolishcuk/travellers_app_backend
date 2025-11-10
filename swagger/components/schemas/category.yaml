@@ -1,0 +1,13 @@
+type: object
+required:
+  - _id
+  - name
+properties:
+  _id:
+    description: "Category id"
+    type: string
+    example: 68ee414ab7ea35cf032c34df
+  name:
+    description: "Category name"
+    type: string
+    example: 'Europa'
