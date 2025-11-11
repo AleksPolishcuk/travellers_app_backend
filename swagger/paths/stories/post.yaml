@@ -1,0 +1,39 @@
+tags:
+  - Travellers
+summary: Create a new traveller
+operationId: createTraveller
+description: Create a new traveller story
+security:
+  - bearerAuth: []
+requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas/story.yaml'
+responses:
+  '201':
+    description: Traveller successfully created
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Traveller successfully created
+            data:
+              $ref: '../../components/schemas/story.yaml'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+    '401':
+      $ref: '../../components/responses/401.yaml'
+    '500':
+      $ref: '../../components/responses/500.yaml'
