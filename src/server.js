@@ -14,11 +14,29 @@ export const startServer = () => {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: 'http://localhost:4000',
+      origin: function (origin, callback) {
+        
+        const allowedOrigins = [
+          'http://localhost:3000',
+          'https://travellers-app-frontend-qx5p.onrender.com' 
+        ];
+        
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        } else {
+          console.log('CORS blocked for origin:', origin);
+          return callback(new Error('Not allowed by CORS'), false);
+        }
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }),
   );
+
+
+  
 
   app.use(
     express.json({
