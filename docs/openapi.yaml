@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Contacts app
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: This is a documentation of contacts app
+tags:
+  - name: Travellers
+    description: Operations about travellers.
+  - name: Auth
+    description: Auth operations.
+servers:
+  - url: http://localhost:4000
+  - url: 
+paths:
+  /stories:
+    get:
+      $ref: ../swagger/paths/stories/get.yaml
+    post:
+      $ref: ../swagger/paths/stories/post.yaml
+  /stories/{storyId}:
+    get:
+      $ref: ../swagger/paths/stories/{storyId}/get.yaml
+    patch:
+      $ref: ../swagger/paths/stories/{storyId}/path.yaml
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

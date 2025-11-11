@@ -1,0 +1,46 @@
+type: object
+required:
+  - _id
+  - img
+  - title
+  - article
+  - category
+  - ownerId
+  - date
+  - favoriteCount
+  - createdAt
+  - updatedAt
+properties:
+  _id:
+    description: "Story's id"
+    type: string
+    example: 68ee414ab7ea35cf032c34df
+  img: 
+    description: "Link to story photo"
+    type: string
+    example: "https://res.cloudinary.com/uqwgdu/image/upload/image.png"  
+  title:
+    description: "Story's title"
+    type: string
+    example: 'The name of the place'
+  article:
+    description: "Story's description"
+    type: string
+    example: 'The description of the place'
+  category:
+    description: "Part of the world"
+    type: string
+    example: 'Europa'
+  ownerId:
+    description: "User's id who owns the story"
+    type: string
+    example: "68ee414ab7ea35cf032c34df"  
+  date:
+    description: 'Date of the story'
+    type: string
+    example: "2025-03-06"
+  favoriteCount:
+    description: "Favorite story"
+    type: integer
+    example: 2
+  

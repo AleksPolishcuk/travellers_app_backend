@@ -1,0 +1,20 @@
+description: Internal server error
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+        - error
+      properties:
+        status:
+          type: integer
+          example: 500
+        message:
+          type: string
+          example: Internal server erro
+        error:
+          type: string
+          description: Human-readable internal error message (from err.message)
+          example: 'Database connection failed'  
