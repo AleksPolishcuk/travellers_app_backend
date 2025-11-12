@@ -5,6 +5,7 @@ import {
   getMeUserController,
   patchUserController,
   updateUserAvatarController,
+  getTravellersController,
 } from '../controllers/users.js';
 
 import { authenticate } from '../middlewares/authenticate.js';
@@ -15,7 +16,6 @@ const router = Router();
 router.get('/me', authenticate, getMeUserController);
 
 router.patch('/:userId', isValidId, authenticate, patchUserController);
-export default router;
 
 router.patch(
   '/:userId/avatar',
@@ -28,3 +28,7 @@ router.patch(
 router.get('/', getUsersController);
 
 router.get('/:userId', isValidId, getUserByIdController);
+
+router.get('/travellers', getTravellersController);
+
+export default router;

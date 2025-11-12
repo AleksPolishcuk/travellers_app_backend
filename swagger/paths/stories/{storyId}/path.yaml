@@ -1,0 +1,57 @@
+tags:
+  - Travellers
+summary: Update a traveller by ID
+operationId: updateTraveller
+description: Update fields of a traveller story
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: storyId
+    required: true
+    schema:
+      type: string
+    description: ID of the traveller to update
+    example: "68ee414ab7ea35cf032c34df"
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        description: Fields to update
+        properties:
+          title:
+            type: string
+            example: "New title"
+          article:
+            type: string
+            example: "Updated description"
+          img:
+            type: string
+            example: "https://res.cloudinary.com/uqwgdu/image/upload/newimage.png"
+          category:
+            type: string
+            example: "Europa"
+responses:
+  '200':
+    description: Traveller successfully updated
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Traveller successfully updated
+  '400':
+    $ref: '../../../components/responses/400.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

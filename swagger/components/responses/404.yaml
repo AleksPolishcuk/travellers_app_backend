@@ -1,0 +1,12 @@
+description: Not found — no travellers found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 404
+        message:
+              type: string
+              example: No travellers found
