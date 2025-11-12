@@ -5,5 +5,5 @@ import { Router } from 'express';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/travellers', storiesRouter);
+router.use('/stories', storiesRouter);
 export default router;
