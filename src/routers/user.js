@@ -13,10 +13,14 @@ import { isValidId } from '../middlewares/isValidId.js';
 import { upload } from '../middlewares/multer.js';
 const router = Router();
 
+
+router.get('/', getUsersController);
+
+router.get('/travellers', getTravellersController);
 router.get('/me', authenticate, getMeUserController);
 
 router.patch('/:userId', isValidId, authenticate, patchUserController);
-
+router.get('/:userId', isValidId, getUserByIdController);
 router.patch(
   '/:userId/avatar',
   isValidId,
@@ -25,10 +29,6 @@ router.patch(
   updateUserAvatarController,
 );
 
-router.get('/', getUsersController);
 
-router.get('/:userId', isValidId, getUserByIdController);
-
-router.get('/travellers', getTravellersController);
 
 export default router;

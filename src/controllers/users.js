@@ -125,7 +125,7 @@ export const getTravellersController = async (req, res, next) => {
     );
     res.status(200).json({
       status: 200,
-      message: 'Successfully fetched travellers!',
+      message: 'Successfully get travellers!',
       data: {
         travellers,
         ...paginationData,
