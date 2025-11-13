@@ -6,6 +6,8 @@ import {
   patchUserController,
   updateUserAvatarController,
   getTravellersController,
+  resetPaswordController,
+  requestResetPasswordController,
 } from '../controllers/users.js';
 
 import { authenticate } from '../middlewares/authenticate.js';
@@ -30,5 +32,6 @@ router.get('/', getUsersController);
 router.get('/:userId', isValidId, getUserByIdController);
 
 router.get('/travellers', getTravellersController);
-
+router.post('/user/send-request-reset-password', requestResetPasswordController);
+router.post('/user/reset-password', resetPaswordController);
 export default router;
