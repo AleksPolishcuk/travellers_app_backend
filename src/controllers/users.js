@@ -4,7 +4,7 @@ import {
   getMeUser,
   updateUserData,
   updateUserAvatar,
-  requestResetPassword,
+  requestResetToken,
   resetPasword,
 } from '../services/users.js';
 import createHttpError from 'http-errors';
@@ -140,8 +140,8 @@ export const getTravellersController = async (req, res, next) => {
 
 
 
-export const requestResetPasswordController = async (req, res) =>{
-  await requestResetPassword(req.body.email);
+export const requestResetTokenController = async (req, res) =>{
+  await requestResetToken(req.body.email);
 
   res.json({
     status: 200,
@@ -152,7 +152,7 @@ export const requestResetPasswordController = async (req, res) =>{
 
 
 
-export const resetPaswordController = async (req, res) =>{
+export const resetPasswordController = async (req, res) =>{
   await resetPasword(req.body);
 
 
