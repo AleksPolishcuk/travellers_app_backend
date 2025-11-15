@@ -9,12 +9,27 @@ info:
 tags:
   - name: Travellers
     description: Operations about travellers.
+  - name: Users
+    description: Operations about users
   - name: Auth
     description: Auth operations.
 servers:
   - url: http://localhost:4000
-  - url: 
 paths:
+  /users:
+    get:
+      $ref: ../swagger/paths/users/get.yaml
+  /users/me:
+    get:
+      $ref: ../swagger/paths/users/getMeUser.yaml
+  /users/{userId}:
+    get:
+      $ref: ../swagger/paths/users/{userId}/get.yaml
+    patch:
+      $ref: ../swagger/paths/users/{userId}/patch.yaml
+  /users/{userId}/avatar:
+    patch:
+      $ref: ../swagger/paths/users/{userId}/patchAvatar.yaml
   /stories:
     get:
       $ref: ../swagger/paths/stories/get.yaml

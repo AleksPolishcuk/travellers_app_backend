@@ -15,7 +15,11 @@ export const getAllStories = async ({
   const storiesQuery = StoriesCollection.find(filter)
     .sort({ [sortBy]: sortOrder })
     .skip(skip)
-    .limit(limit);
+    .limit(limit)
+    .populate('category', 'name')
+    .populate('ownerId', 'name avatarUrl articlesAmount');
+   
+    
   const stories = await storiesQuery.exec();
 
   const storiesCount = await StoriesCollection.countDocuments(filter);
