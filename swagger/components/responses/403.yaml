@@ -1,0 +1,12 @@
+description: Forbidden. The user does not have permission to perform this action.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 403
+        message:
+          type: string
+          example: You can only update your own avatar.

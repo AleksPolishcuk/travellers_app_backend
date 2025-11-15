@@ -8,8 +8,6 @@ required:
   - ownerId
   - date
   - favoriteCount
-  - createdAt
-  - updatedAt
 properties:
   _id:
     description: "Story's id"
