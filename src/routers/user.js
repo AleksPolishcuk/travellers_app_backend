@@ -7,6 +7,10 @@ import {
   updateUserAvatarController,
   getTravellersController,
 } from '../controllers/users.js';
+import {
+  addSavedStoryController,
+  removeSavedStoryController
+} from '../controllers/savedStories.js';
 
 import { authenticate } from '../middlewares/authenticate.js';
 import { isValidId } from '../middlewares/isValidId.js';
@@ -18,6 +22,10 @@ router.get('/', getUsersController);
 
 router.get('/travellers', getTravellersController);
 router.get('/me', authenticate, getMeUserController);
+
+router.post('/saved/:storyId', authenticate, isValidId, addSavedStoryController);
+router.delete('/saved/:storyId', authenticate, isValidId, removeSavedStoryController);
+
 
 router.patch('/:userId', isValidId, authenticate, patchUserController);
 router.get('/:userId', isValidId, getUserByIdController);
