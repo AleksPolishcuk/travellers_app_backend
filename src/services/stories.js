@@ -1,4 +1,5 @@
 import { SORT_ORDER } from '../constants/index.js';
+import { Category } from '../database/models/category.js';
 import { StoriesCollection } from '../database/models/story.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -52,4 +53,9 @@ export const updateStoryById = async (storyId, userId, updateData) => {
     { new: true },
   );
   return updatedStory;
+};
+
+export const getCategories = async () => {
+  const response = Category.find();
+  return response;
 };

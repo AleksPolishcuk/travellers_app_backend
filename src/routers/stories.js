@@ -4,6 +4,7 @@ import {
   getStoriesController,
   getStoryByIdController,
   updateStoryController,
+  getCategoriesController,
 } from '../controllers/stories.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { authenticate } from '../middlewares/authenticate.js';
@@ -15,6 +16,8 @@ import {
 const router = Router();
 
 router.get('/', ctrlWrapper(getStoriesController));
+
+router.get('/categories', ctrlWrapper(getCategoriesController));
 
 router.get('/:storyId', ctrlWrapper(getStoryByIdController));
 
