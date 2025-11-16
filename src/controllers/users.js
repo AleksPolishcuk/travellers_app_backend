@@ -4,6 +4,8 @@ import {
   getMeUser,
   updateUserData,
   updateUserAvatar,
+  requestResetToken,
+  resetPasword,
 } from '../services/users.js';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -125,7 +127,7 @@ export const getTravellersController = async (req, res, next) => {
     );
     res.status(200).json({
       status: 200,
-      message: 'Successfully fetched travellers!',
+      message: 'Successfully get travellers!',
       data: {
         travellers,
         ...paginationData,
@@ -135,3 +137,28 @@ export const getTravellersController = async (req, res, next) => {
     next(error);
   }
 };
+
+
+
+export const requestResetTokenController = async (req, res) =>{
+  await requestResetToken(req.body.email);
+
+  res.json({
+    status: 200,
+    message: 'Successfully send request to reset password!',
+    data: {}
+  });
+};
+
+
+
+export const resetPasswordController = async (req, res) =>{
+  await resetPasword(req.body);
+
+
+  res.json({
+    status: 200,
+    message: 'Successfully resset password!',
+    data: {}
+  });
+} ;

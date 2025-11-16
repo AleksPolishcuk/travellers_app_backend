@@ -1,0 +1,46 @@
+type: object
+required:
+  - _id
+  - name
+  - email
+  - password
+  - avatarUrl
+  - description
+  - onboardingCompleted
+  - savedStories
+properties:
+  _id:
+    description: 'Users id'
+    type: string
+    example: 6881563901add19ee16fcff5
+  name:
+    description: 'User name'
+    type: string
+    example: 'Дмитро Романенко'
+
+  email:
+    description: 'User email'
+    type: string
+    example: test123@gmail.com
+  password:
+    type: string
+    example: qwerty
+  avatarUrl:
+    description: 'User avatar link'
+    type: string
+    example: https://ftp.goit.study/img/harmoniq/users/6881563901add19ee16fcff5.webp
+  description:
+    description: 'Description about the user'
+    type: string
+    example: User description
+  onboardingCompleted:
+    type: boolean
+    default: false
+    example: false
+  savedStories:
+    description: "IDs or populated list of user's saved stories"
+    type: array
+    items:
+      description: 'Stories Id'
+      type: string
+      example: '68498236a100312bea07902a'

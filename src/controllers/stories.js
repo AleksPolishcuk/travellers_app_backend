@@ -45,13 +45,9 @@ export const getStoryByIdController = async (req, res, next) => {
 };
 
 export const createStoryController = async (req, res) => {
-  const userId = req.user._id;
-  const storyData = req.body;
-
-  if (!storyData.title || !storyData.description || !storyData.storyType) {
-    throw createHttpError(400, 'Missing required fields');
-  }
-  const newStory = await createStory(storyData, userId);
+    const userId = req.user._id;
+    const storyData = req.body;
+    const newStory = await createStory(storyData, userId);
 
   res.status(201).json({
     status: 201,
