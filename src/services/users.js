@@ -2,7 +2,7 @@ import { UsersCollection } from '../database/models/user.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { StoriesCollection } from '../database/models/story.js';
 import jwt from 'jsonwebtoken';
-import { SMTP, TEMPLATES_UPLOAD_DIR } from '../constants/index.js';
+import { SMTP, TEMP_UPLOAD_DIR } from '../constants/index.js';
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import createHttpError from 'http-errors';
@@ -89,8 +89,8 @@ export const requestResetToken = async (email) =>{
   );
 
   const templatePath = path.join(
-    TEMPLATES_UPLOAD_DIR,
-    'template-request-reset-token.html'
+    TEMP_UPLOAD_DIR,
+    'template-request-reset-token.html',
   );
 
 
