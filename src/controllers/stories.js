@@ -10,6 +10,7 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getStoriesController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -46,9 +47,13 @@ export const getStoryByIdController = async (req, res, next) => {
 };
 
 export const createStoryController = async (req, res) => {
-    const userId = req.user._id;
-    const storyData = req.body;
-    const newStory = await createStory(storyData, userId);
+  const userId = req.user._id;
+  const storyData = req.body;
+    if (req.file) {
+      const imgUrl = await saveFileToCloudinary(req.file);
+      storyData.img = imgUrl;
+    }
+  const newStory = await createStory(storyData, userId);
 
   res.status(201).json({
     status: 201,
