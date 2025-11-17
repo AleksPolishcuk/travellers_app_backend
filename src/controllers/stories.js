@@ -5,6 +5,7 @@ import {
   getAllStories,
   getStoryById,
   updateStoryById,
+  getCategories,
 } from '../services/stories.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -72,4 +73,9 @@ export const updateStoryController = async (req, res, next) => {
     status: 200,
     message: `Story with id ${storyId} successfully updated!`,
   });
+};
+
+export const getCategoriesController = async (req, res) => {
+  const response = await getCategories();
+  res.json({ status: 200, data: response });
 };
