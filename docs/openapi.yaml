@@ -1,11 +1,11 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: Contacts app
+  title: Travellers app
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: This is a documentation of contacts app
+  description: This is a documentation of travellers app
 tags:
   - name: Travellers
     description: Operations about travellers.
@@ -16,6 +16,18 @@ tags:
 servers:
   - url: http://localhost:4000
 paths:
+  /auth/register:
+    post:
+    $ref: ../swagger/paths/auth/register/post.yaml
+  /auth/login:
+    post: 
+    $ref: ../swagger/paths/auth/login/post.yaml
+  /auth/logout:
+    post: 
+    $ref: ../swagger/paths/auth/logout/post.yaml
+  /auth/refresh-session:
+    post: 
+    $ref: ../swagger/paths/auth/refresh/post.yaml
   /users:
     get:
       $ref: ../swagger/paths/users/get.yaml
@@ -46,3 +58,16 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+
+    cookieAuth:     
+      type: apiKey
+      in: cookie
+      name: accessToken
+      description: JWT access token stored in httpOnly cookie
+
+    sessionAuth:     
+      type: apiKey
+      in: cookie
+      name: sessionId
+      description: Session identifier stored in httpOnly cookie
+
