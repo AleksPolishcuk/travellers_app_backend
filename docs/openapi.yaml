@@ -18,16 +18,16 @@ servers:
 paths:
   /auth/register:
     post:
-    $ref: ../swagger/paths/auth/register/post.yaml
-  /auth/login:
-    post: 
-    $ref: ../swagger/paths/auth/login/post.yaml
+      $ref: ../swagger/paths/auth/register/post.yaml
+  /auth/login: 
+    post:
+      $ref: ../swagger/paths/auth/login/post.yaml
   /auth/logout:
-    post: 
-    $ref: ../swagger/paths/auth/logout/post.yaml
+    post:
+      $ref: ../swagger/paths/auth/logout/post.yaml
   /auth/refresh-session:
-    post: 
-    $ref: ../swagger/paths/auth/refresh/post.yaml
+    post:
+      $ref: ../swagger/paths/auth/refresh/post.yaml
   /users:
     get:
       $ref: ../swagger/paths/users/get.yaml
@@ -58,16 +58,11 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-
-    cookieAuth:     
+    cookieAuth:
       type: apiKey
       in: cookie
       name: accessToken
-      description: JWT access token stored in httpOnly cookie
-
-    sessionAuth:     
+    sessionAuth:
       type: apiKey
       in: cookie
       name: sessionId
-      description: Session identifier stored in httpOnly cookie
-
