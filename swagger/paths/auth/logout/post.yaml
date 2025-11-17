@@ -1,0 +1,18 @@
+
+  tags:
+    - Auth
+  summary: Logout user
+  operationId: logoutUser
+  description: Clear authentication cookies and end user session
+  security:
+    - bearerAuth: [] 
+  responses:
+    '204':
+      description: Successfully logged out
+      headers:
+        Set-Cookie:
+          schema:
+            type: string
+          description: Cleared authentication cookies
+    '500':
+      $ref: '../../../components/responses/500.yaml'
