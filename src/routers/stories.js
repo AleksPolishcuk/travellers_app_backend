@@ -13,6 +13,7 @@ import {
   createStorySchema,
   updateStoriesSchema,
 } from '../validation/stories.js';
+import {upload} from "../middlewares/multer.js";
 const router = Router();
 
 router.get('/', ctrlWrapper(getStoriesController));
@@ -23,6 +24,7 @@ router.get('/:storyId', ctrlWrapper(getStoryByIdController));
 
 router.post(
   '/',
+  upload.single("img"),
   authenticate,
   validateBody(createStorySchema),
   ctrlWrapper(createStoryController),

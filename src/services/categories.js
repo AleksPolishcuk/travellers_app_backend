@@ -1,4 +1,4 @@
-import { CategoryCollection } from '../database/models/category.js';
+import { Category } from '../database/models/category.js';
 import { SORT_ORDER } from '../constants/index.js';
 export const getAllCategories = async ({
   page = 1,
@@ -8,13 +8,13 @@ export const getAllCategories = async ({
   filter = {},
 }) => {
   const skip = (page - 1) * perPage;
-  const categories = await CategoryCollection.find(filter)
+  const categories = await Category.find(filter)
     .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
     .skip(skip)
     .limit(perPage)
     .select('_id name');
 
-  const total = await CategoryCollection.countDocuments(filter);
+  const total = await Category.countDocuments(filter);
   return {
     total,
     page,
@@ -24,6 +24,6 @@ export const getAllCategories = async ({
 };
 
 export const getCategoryById = async (categoryId) => {
-  const category = await CategoryCollection.findById(categoryId);
+  const category = await Category.findById(categoryId);
   return category;
 };

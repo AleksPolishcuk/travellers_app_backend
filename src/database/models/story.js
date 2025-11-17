@@ -66,6 +66,10 @@ const travellersSchema = new Schema(
       type: String,
       required: true,
     },
+    fullText: {
+      type: String,
+      required: true,
+    },
     category: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
@@ -92,7 +96,7 @@ const travellersSchema = new Schema(
     timestamps: false,
     versionKey: false,
     collation: { locale: 'en', strength: 2 },
-    collection: 'travellers.travellers',
+    collection: 'stories',
   },
 );
 
