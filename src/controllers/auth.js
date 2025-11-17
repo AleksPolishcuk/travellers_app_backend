@@ -7,18 +7,26 @@ import { SessionsCollection } from '../database/models/session.js';
 import { refreshUsersSession } from '../services/auth.js';
 
 const setupSession = (res, session) => {
-  res.cookie('accessToken', session.accessToken, {
+
+  const cookieOptions = {
     httpOnly: true,
+    sameSite: 'lax',
+    path: '/',       
+  };
+
+
+  res.cookie('accessToken', session.accessToken, {
+     ...cookieOptions,
     expires: new Date(Date.now() + FIFTEEN_MINUTES),
   });
 
   res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
+    ...cookieOptions,
     expires: new Date(Date.now() + THIRTY_DAYS),
   });
 
   res.cookie('sessionId', session._id, {
-    httpOnly: true,
+    ...cookieOptions,
     expires: new Date(Date.now() + THIRTY_DAYS),
   });
 };
@@ -54,10 +62,23 @@ export const logoutUserController = async (req, res) => {
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
   }
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
-  res.clearCookie('sessionId');
-
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',      
+  });
+  
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+  });
+  
+  res.clearCookie('sessionId', {
+    httpOnly: true, 
+    sameSite: 'lax',
+    path: '/',
+  });
   res.status(204).send();
 };
 

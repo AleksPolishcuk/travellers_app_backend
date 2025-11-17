@@ -16,15 +16,13 @@ export const startServer = () => {
   app.use(
     cors({
       origin: function (origin, callback) {
-        
         const allowedOrigins = [
           'http://localhost:3000',
-          'https://travellers-app-frontend-qx5p.onrender.com' 
+          'https://travellers-app-frontend-qx5p.onrender.com',
         ];
-        
-        
+
         if (!origin) return callback(null, true);
-        
+
         if (allowedOrigins.includes(origin)) {
           return callback(null, true);
         } else {
@@ -37,6 +35,9 @@ export const startServer = () => {
     }),
   );
 
+
+  
+
   app.use(
     express.json({
       type: ['application/json', 'application/vnd.api+json'],
@@ -44,10 +45,11 @@ export const startServer = () => {
     }),
   );
 
+  app.use('/api-docs', swaggerDocs());
 
 app.use('/api-docs', swaggerDocs());
 
-
+ 
   app.use(router);
   app.use('/', notFoundHandler);
   app.use(errorHandler);

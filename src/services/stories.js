@@ -19,8 +19,7 @@ export const getAllStories = async ({
     .limit(limit)
     .populate('category', 'name')
     .populate('ownerId', 'name avatarUrl articlesAmount');
-   
-    
+
   const stories = await storiesQuery.exec();
 
   const storiesCount = await StoriesCollection.countDocuments(filter);
