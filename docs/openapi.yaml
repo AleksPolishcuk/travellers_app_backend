@@ -44,9 +44,10 @@ paths:
       $ref: ../swagger/paths/users/{userId}/patchAvatar.yaml
   /users/{userId}/saved/{storyId}:
     post:
-      $ref: './paths/users/{userId}/saved/addSavedStory.yaml'
+      $ref: '../swagger/paths/users/{userId}/saved/addSavedStory.yaml'
     delete:
-      $ref: './paths/users/{userId}/saved/deleteSavedStory.yaml'
+      $ref: '../swagger/paths/users/{userId}/saved/deleteSavedStory.yaml'
+  /stories:   
     get:
       $ref: ../swagger/paths/stories/get.yaml
     post:

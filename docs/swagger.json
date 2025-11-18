@@ -763,6 +763,165 @@
         }
       }
     },
+    "/users/{userId}/saved/{storyId}": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add a story to user's saved stories",
+        "operationId": "addSavedStory",
+        "description": "Add a story to the savedStories list of the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the user",
+            "example": "6881563901add19ee16fcff5"
+          },
+          {
+            "in": "path",
+            "name": "storyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the story to save",
+            "example": "7001563901add19ee16fc999"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Story added to saved list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Story added to saved"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404-user"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Remove a story from user's saved stories",
+        "operationId": "removeSavedStory",
+        "description": "Remove a story from the savedStories list of the authenticated user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the user",
+            "example": "6881563901add19ee16fcff5"
+          },
+          {
+            "in": "path",
+            "name": "storyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the story to remove",
+            "example": "7001563901add19ee16fc999"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Story removed from saved list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Story removed from saved"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404-user"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
     "/stories": {
       "get": {
         "tags": [
@@ -1141,14 +1300,12 @@
       "cookieAuth": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "accessToken",
-        "description": "JWT access token stored in httpOnly cookie"
+        "name": "accessToken"
       },
       "sessionAuth": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "sessionId",
-        "description": "Session identifier stored in httpOnly cookie"
+        "name": "sessionId"
       }
     },
     "schemas": {
