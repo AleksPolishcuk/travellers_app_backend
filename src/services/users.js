@@ -9,7 +9,6 @@ import createHttpError from 'http-errors';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import path from 'node:path';
 import {sendEmail} from '../utils/sendEmail.js';
-import bcrypt from 'bcryptjs';
 import { SessionsCollection } from '../database/models/session.js';
 export const getAllUsers = async ({ page, perPage }) => {
   const limit = perPage;
@@ -90,7 +89,7 @@ export const requestResetToken = async (email) =>{
 
   const templatePath = path.join(
     TEMPLATES_UPLOAD_DIR,
-    'template-request-reset-token.html'
+    'template-request-email-token.html'
   );
 
 
@@ -102,7 +101,7 @@ export const requestResetToken = async (email) =>{
 
   const html = template({
     name: user.name,
-    link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+    link: `${getEnvVar('APP_DOMAIN')}/reset-email?token=${resetToken}`,
   });
 
 
@@ -110,7 +109,7 @@ export const requestResetToken = async (email) =>{
     await sendEmail({
       from: getEnvVar(SMTP.SMTP_FROM),
       to: email,
-      subject:  'Reset your password',
+      subject:  'Reset your email',
       html
     });
   } catch (error) {
@@ -124,7 +123,7 @@ export const requestResetToken = async (email) =>{
 
 
 
-export const resetPasword = async (payload) =>{
+export const resetEmail = async (payload) =>{
   let entries;
 
   try {
@@ -136,7 +135,7 @@ export const resetPasword = async (payload) =>{
 
 
   const user = await UsersCollection.findOne(
-    {_id: entries.sub, email: entries.email},
+    {_id: entries.sub},
   );
 
   if(!user){
@@ -150,11 +149,9 @@ export const resetPasword = async (payload) =>{
     throw createHttpError(401, 'Token is expired or invalid');
   };
 
-  const encryptedPassword = await bcrypt.hash(payload.password, 10);
-
   await UsersCollection.findOneAndUpdate(
     {_id: user._id},
-    {password: encryptedPassword} 
+    {email: payload.email} 
   );
 
 
