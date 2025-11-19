@@ -75,23 +75,33 @@ export const updateUserAvatarController = async (req, res, next) => {
     throw createHttpError(403, 'You can only update your own avatar');
   }
 
-  if (!req.file) {
-    throw createHttpError(400, 'No file uploaded for avatar update.');
+  const updateData = {};
+
+  if (req.file) {
+    const newAvatarUrl = await saveFileToCloudinary(req.file);
+    updateData.avatarUrl = newAvatarUrl;
   }
 
-  const newAvatarUrl = await saveFileToCloudinary(req.file);
+  if (req.body.description) {
+    updateData.description = req.body.description;
+  }
 
-  const updatedUser = await updateUserAvatar(userId, newAvatarUrl);
+  if (Object.keys(updateData).length === 0) {
+    throw createHttpError(400, 'No data provided for update');
+  }
+
+  const updatedUser = await updateUserAvatar(userId, updateData);
 
   if (!updatedUser) {
     throw createHttpError(404, 'User not found.');
   }
 
   res.status(200).json({
-    message: 'Avatar successfully updated!',
+    message: 'Profile successfully updated!',
     data: {
-      avatarUrl: updatedUser.avatarUrl,
       id: updatedUser._id,
+      avatarUrl: updatedUser.avatarUrl,
+      description: updatedUser.description,
     },
   });
 };
@@ -138,15 +148,13 @@ export const getTravellersController = async (req, res, next) => {
   }
 };
 
-
-
-export const requestResetTokenController = async (req, res) =>{
+export const requestResetTokenController = async (req, res) => {
   await requestResetToken(req.body.email);
 
   res.json({
     status: 200,
     message: 'Successfully send request to reset password!',
-    data: {}
+    data: {},
   });
 };
 
@@ -155,10 +163,9 @@ export const requestResetTokenController = async (req, res) =>{
 export const resetEmailController = async (req, res) =>{
   await resetPasword(req.body);
 
-
   res.json({
     status: 200,
     message: 'Successfully resset password!',
-    data: {}
+    data: {},
   });
-} ;
+};

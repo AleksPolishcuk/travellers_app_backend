@@ -1,4 +1,5 @@
 import { SORT_ORDER } from '../constants/index.js';
+import { Category } from '../database/models/category.js';
 import { StoriesCollection } from '../database/models/story.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -18,8 +19,7 @@ export const getAllStories = async ({
     .limit(limit)
     .populate('category', 'name')
     .populate('ownerId', 'name avatarUrl articlesAmount');
-   
-    
+
   const stories = await storiesQuery.exec();
 
   const storiesCount = await StoriesCollection.countDocuments(filter);
@@ -33,7 +33,9 @@ export const getAllStories = async ({
 };
 
 export const getStoryById = async (storyId) => {
-  const story = await StoriesCollection.findById(storyId);
+  const story = await StoriesCollection.findById(storyId)
+  .populate('ownerId', 'name avatarUrl description ')
+  .populate('category', 'name');
   return story;
 };
 
@@ -52,4 +54,9 @@ export const updateStoryById = async (storyId, userId, updateData) => {
     { new: true },
   );
   return updatedStory;
+};
+
+export const getCategories = async () => {
+  const response = Category.find();
+  return response;
 };

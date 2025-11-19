@@ -47,7 +47,6 @@
 
 // export const StoriesCollection = model('stories', storiesSchema);
 
-
 //?====================================
 
 import { model, Schema } from 'mongoose';
@@ -64,6 +63,10 @@ const travellersSchema = new Schema(
       trim: true,
     },
     article: {
+      type: String,
+      required: true,
+    },
+    fullText: {
       type: String,
       required: true,
     },
@@ -87,10 +90,14 @@ const travellersSchema = new Schema(
     favoriteCount: {
       type: Number,
       default: 0,
-    }
+    },
   },
-  { timestamps: false, versionKey: false, collation: { locale: 'en', strength: 2 },
-  collection: 'travellers.travellers' },
+  {
+    timestamps: false,
+    versionKey: false,
+    collation: { locale: 'en', strength: 2 },
+    collection: 'stories',
+  },
 );
 
 export const StoriesCollection = model('Traveller', travellersSchema);

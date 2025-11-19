@@ -2,7 +2,7 @@ import { UsersCollection } from '../database/models/user.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { StoriesCollection } from '../database/models/story.js';
 import jwt from 'jsonwebtoken';
-import { SMTP, TEMPLATES_UPLOAD_DIR } from '../constants/index.js';
+import { SMTP, TEMP_UPLOAD_DIR } from '../constants/index.js';
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import createHttpError from 'http-errors';
@@ -55,36 +55,32 @@ export const updateUserData = async (userId, payload) => {
   };
 };
 
-export const updateUserAvatar = async (userId, avatarURL) => {
+export const updateUserAvatar = async (userId, updateData) => {
   const updatedUser = await UsersCollection.findByIdAndUpdate(
     userId,
-    { avatarURL: avatarURL },
+    updateData,
     { new: true },
   );
 
   return updatedUser;
 };
 
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
 
-
-
-export const requestResetToken = async (email) =>{
-  const user = await UsersCollection.findOne({email});
-
-
-  if(!user){
+  if (!user) {
     throw createHttpError(404, 'User not found');
-  };
+  }
 
   const resetToken = jwt.verify(
     {
       sub: user._id,
-      email
+      email,
     },
     getEnvVar('JWT_SECRET'),
     {
-      expiresIn: "5m"
-    }
+      expiresIn: '5m',
+    },
   );
 
   const templatePath = path.join(
@@ -92,10 +88,7 @@ export const requestResetToken = async (email) =>{
     'template-request-email-token.html'
   );
 
-
-  const templateSource = (
-    await fs.readFile(templatePath)
-  ).toString();
+  const templateSource = (await fs.readFile(templatePath)).toString();
 
   const template = handlebars.compile(templateSource);
 
@@ -103,7 +96,6 @@ export const requestResetToken = async (email) =>{
     name: user.name,
     link: `${getEnvVar('APP_DOMAIN')}/reset-email?token=${resetToken}`,
   });
-
 
   try {
     await sendEmail({
@@ -113,12 +105,13 @@ export const requestResetToken = async (email) =>{
       html
     });
   } catch (error) {
-    if(error.status === 500){
-      throw createHttpError(500,  "Failed to send the email, please try again later.");
+    if (error.status === 500) {
+      throw createHttpError(
+        500,
+        'Failed to send the email, please try again later.',
+      );
     }
-  };
-
-
+  }
 };
 
 
@@ -127,33 +120,30 @@ export const resetEmail = async (payload) =>{
   let entries;
 
   try {
-    entries = jwt.verify(payload.token, getEnvVar("JWT_SECRET"));
+    entries = jwt.verify(payload.token, getEnvVar('JWT_SECRET'));
   } catch (error) {
     createHttpError(401, error.message);
     throw error;
-  };
-
+  }
 
   const user = await UsersCollection.findOne(
     {_id: entries.sub},
   );
 
-  if(!user){
+  if (!user) {
     throw createHttpError(404, 'User not found');
   }
 
-  const isExpired = new Date > payload.token;
+  const isExpired = new Date() > payload.token;
 
-
-  if(isExpired){
+  if (isExpired) {
     throw createHttpError(401, 'Token is expired or invalid');
-  };
+  }
 
   await UsersCollection.findOneAndUpdate(
     {_id: user._id},
     {email: payload.email} 
   );
 
-
-  await SessionsCollection.deleteOne({userId: user._id});
+  await SessionsCollection.deleteOne({ userId: user._id });
 };

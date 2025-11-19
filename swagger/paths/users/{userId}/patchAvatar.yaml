@@ -1,8 +1,8 @@
 tags:
   - Users
-summary: Update user avatar
+summary: Update user avatar and add description
 operationId: updateUserAvatar
-description: Update the avatar for the currently authorized user
+description: Update the avatar for the currently authorized user and if description is required
 security:
   - bearerAuth: []
 parameters:
@@ -26,9 +26,14 @@ requestBody:
             type: string
             format: binary
             description: Image file for the new avatar
+          description:
+            type: string
+            description: Short text that describes the user
+            example: 'Frontend developer and traveller'
+
 responses:
   '200':
-    description: 'Avatar successfully updated!'
+    description: 'Profile successfully updated!'
     content:
       application/json:
         schema:
@@ -39,12 +44,13 @@ responses:
               example: 200
             message:
               type: string
-              example: 'Avatar successfully updated!'
+              example: 'Profile successfully updated!'
             data:
               type: object
               required:
                 - avatarUrl
                 - id
+                - description
               properties:
                 user:
                   $ref: '../../../components/schemas/user.yaml'

@@ -1,9 +1,9 @@
-import { getCategories } from '../services/categoriesService.js';
+import { getAllCategories } from '../services/categories.js';
 
 const parseStoryType = async (storyType) => {
   if (typeof storyType !== 'string') return undefined;
 
-  const categories = await getCategories();
+  const categories = await getAllCategories();
   const trimmed = storyType.trim();
 
   if (!categories.includes(trimmed)) return undefined;
