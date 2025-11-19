@@ -33,7 +33,9 @@ export const getAllStories = async ({
 };
 
 export const getStoryById = async (storyId) => {
-  const story = await StoriesCollection.findById(storyId);
+  const story = await StoriesCollection.findById(storyId)
+  .populate('ownerId', 'name avatarUrl description ')
+  .populate('category', 'name');
   return story;
 };
 
