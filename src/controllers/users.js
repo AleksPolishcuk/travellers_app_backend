@@ -158,7 +158,9 @@ export const requestResetTokenController = async (req, res) => {
   });
 };
 
-export const resetPasswordController = async (req, res) => {
+
+
+export const resetEmailController = async (req, res) =>{
   await resetPasword(req.body);
 
   res.json({

@@ -8,8 +8,7 @@ import handlebars from 'handlebars';
 import createHttpError from 'http-errors';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import path from 'node:path';
-import { sendEmail } from '../utils/sendEmail.js';
-import bcrypt from 'bcryptjs';
+import {sendEmail} from '../utils/sendEmail.js';
 import { SessionsCollection } from '../database/models/session.js';
 export const getAllUsers = async ({ page, perPage }) => {
   const limit = perPage;
@@ -85,8 +84,8 @@ export const requestResetToken = async (email) => {
   );
 
   const templatePath = path.join(
-    TEMP_UPLOAD_DIR,
-    'template-request-reset-token.html',
+    TEMPLATES_UPLOAD_DIR,
+    'template-request-email-token.html'
   );
 
   const templateSource = (await fs.readFile(templatePath)).toString();
@@ -95,15 +94,15 @@ export const requestResetToken = async (email) => {
 
   const html = template({
     name: user.name,
-    link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+    link: `${getEnvVar('APP_DOMAIN')}/reset-email?token=${resetToken}`,
   });
 
   try {
     await sendEmail({
       from: getEnvVar(SMTP.SMTP_FROM),
       to: email,
-      subject: 'Reset your password',
-      html,
+      subject:  'Reset your email',
+      html
     });
   } catch (error) {
     if (error.status === 500) {
@@ -115,7 +114,9 @@ export const requestResetToken = async (email) => {
   }
 };
 
-export const resetPasword = async (payload) => {
+
+
+export const resetEmail = async (payload) =>{
   let entries;
 
   try {
@@ -125,10 +126,9 @@ export const resetPasword = async (payload) => {
     throw error;
   }
 
-  const user = await UsersCollection.findOne({
-    _id: entries.sub,
-    email: entries.email,
-  });
+  const user = await UsersCollection.findOne(
+    {_id: entries.sub},
+  );
 
   if (!user) {
     throw createHttpError(404, 'User not found');
@@ -140,11 +140,9 @@ export const resetPasword = async (payload) => {
     throw createHttpError(401, 'Token is expired or invalid');
   }
 
-  const encryptedPassword = await bcrypt.hash(payload.password, 10);
-
   await UsersCollection.findOneAndUpdate(
-    { _id: user._id },
-    { password: encryptedPassword },
+    {_id: user._id},
+    {email: payload.email} 
   );
 
   await SessionsCollection.deleteOne({ userId: user._id });

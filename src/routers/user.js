@@ -7,7 +7,7 @@ import {
   updateUserAvatarController,
   getTravellersController,
   requestResetTokenController,
-  resetPasswordController,
+  resetEmailController,
 } from '../controllers/users.js';
 import {
   addSavedStoryController,
@@ -18,7 +18,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { upload } from '../middlewares/multer.js';
-import { requestResetTokenSchema, resetPaswordSchema } from '../validation/users.js';
+import { requestResetTokenSchema, resetEmailSchema } from '../validation/users.js';
 const router = Router();
 
 
@@ -41,6 +41,11 @@ router.patch(
   updateUserAvatarController,
 );
 
-router.post('/user/send-request-reset-password',validateBody(requestResetTokenSchema), requestResetTokenController);
-router.post('/user/reset-password', validateBody(resetPaswordSchema), resetPasswordController);
+router.get('/', getUsersController);
+
+router.get('/:userId', isValidId, getUserByIdController);
+
+router.get('/travellers', getTravellersController);
+router.post('/user/send-request-reset-email',validateBody(requestResetTokenSchema), requestResetTokenController);
+router.post('/user/reset-email', validateBody(resetEmailSchema), resetEmailController);
 export default router;
