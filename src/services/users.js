@@ -84,7 +84,7 @@ export const requestResetToken = async (email) => {
   );
 
   const templatePath = path.join(
-    TEMPLATES_UPLOAD_DIR,
+    TEMP_UPLOAD_DIR,
     'template-request-email-token.html'
   );
 
