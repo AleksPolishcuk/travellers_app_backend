@@ -12,6 +12,8 @@ const usersSchema = new Schema(
     },
     description: { type: String, required: false, default: '' },
     onboardingCompleted: { type: Boolean, default: false },
+
+    // ref має збігатися з model name story-моделі: 'stories'
     savedStories: [{ type: Schema.Types.ObjectId, ref: 'stories' }],
   },
   { timestamps: true, versionKey: false },
@@ -22,4 +24,5 @@ usersSchema.methods.toJSON = function () {
   delete obj.password;
   return obj;
 };
+
 export const UsersCollection = model('user', usersSchema);

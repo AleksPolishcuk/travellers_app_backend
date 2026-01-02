@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import {
   getUsersController,
   getUserByIdController,
@@ -9,10 +10,6 @@ import {
   requestResetTokenController,
   resetEmailController,
 } from '../controllers/users.js';
-import {
-  addSavedStoryController,
-  removeSavedStoryController
-} from '../controllers/savedStories.js';
 
 import { validateBody } from '../middlewares/validateBody.js';
 import { authenticate } from '../middlewares/authenticate.js';
@@ -21,24 +18,63 @@ import { upload } from '../middlewares/multer.js';
 import { requestResetTokenSchema, resetEmailSchema } from '../validation/users.js';
 const router = Router();
 
+import {
+  requestResetTokenSchema,
+  resetPaswordSchema,
+  updateTravelerSchema,
+} from '../validation/users.js';
 
-router.get('/', getUsersController);
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
-router.get('/travellers', getTravellersController);
-router.get('/me', authenticate, getMeUserController);
+const router = Router();
 
-router.post('/saved/:storyId', authenticate, isValidId, addSavedStoryController);
-router.delete('/saved/:storyId', authenticate, isValidId, removeSavedStoryController);
+/**
+ * PRIVATE
+ */
+router.get('/me', authenticate, ctrlWrapper(getMeUserController));
 
+/**
+ * PUBLIC
+ */
+router.get('/', ctrlWrapper(getUsersController));
+router.get('/travellers', ctrlWrapper(getTravellersController));
+router.get('/:userId', isValidId, ctrlWrapper(getUserByIdController));
 
-router.patch('/:userId', isValidId, authenticate, patchUserController);
-router.get('/:userId', isValidId, getUserByIdController);
+/**
+ * PRIVATE — update profile (traveler form)
+ */
+router.patch(
+  '/:userId',
+  isValidId,
+  authenticate,
+  validateBody(updateTravelerSchema),
+  ctrlWrapper(patchUserController),
+);
+
+/**
+ * PRIVATE — update avatar
+ */
 router.patch(
   '/:userId/avatar',
   isValidId,
   authenticate,
-  upload.single('avatar'),
-  updateUserAvatarController,
+  uploadAvatar.single('avatar'),
+  ctrlWrapper(updateUserAvatarController),
+);
+
+/**
+ * PASSWORD RESET
+ */
+router.post(
+  '/user/send-request-reset-password',
+  validateBody(requestResetTokenSchema),
+  ctrlWrapper(requestResetTokenController),
+);
+
+router.post(
+  '/user/reset-password',
+  validateBody(resetPaswordSchema),
+  ctrlWrapper(resetPasswordController),
 );
 
 router.get('/', getUsersController);
