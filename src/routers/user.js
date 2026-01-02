@@ -8,13 +8,15 @@ import {
   updateUserAvatarController,
   getTravellersController,
   requestResetTokenController,
-  resetPasswordController,
+  resetEmailController,
 } from '../controllers/users.js';
 
 import { validateBody } from '../middlewares/validateBody.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { isValidId } from '../middlewares/isValidId.js';
-import { uploadAvatar } from '../middlewares/multer.js';
+import { upload } from '../middlewares/multer.js';
+import { requestResetTokenSchema, resetEmailSchema } from '../validation/users.js';
+const router = Router();
 
 import {
   requestResetTokenSchema,
@@ -75,4 +77,11 @@ router.post(
   ctrlWrapper(resetPasswordController),
 );
 
+router.get('/', getUsersController);
+
+router.get('/:userId', isValidId, getUserByIdController);
+
+router.get('/travellers', getTravellersController);
+router.post('/user/send-request-reset-email',validateBody(requestResetTokenSchema), requestResetTokenController);
+router.post('/user/reset-email', validateBody(resetEmailSchema), resetEmailController);
 export default router;
