@@ -1,31 +1,56 @@
-import { getAllCategories } from '../services/categories.js';
+import { isValidObjectId } from 'mongoose';
 
-const parseStoryType = async (storyType) => {
-  if (typeof storyType !== 'string') return undefined;
-
-  const categories = await getAllCategories();
-  const trimmed = storyType.trim();
-
-  if (!categories.includes(trimmed)) return undefined;
+const parseCategoryId = (value) => {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (!isValidObjectId(trimmed)) return undefined;
   return trimmed;
 };
 
-const parseBoolean = (value) => {
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'string') {
-    if (value.toLowerCase() === 'true') return true;
-    if (value.toLowerCase() === 'false') return false;
-  }
-  return undefined;
+const parseCategoryIds = (value) => {
+  if (typeof value !== 'string') return undefined;
+
+  const ids = value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (ids.length === 0) return undefined;
+
+  const validIds = ids.filter((id) => isValidObjectId(id));
+
+  if (validIds.length === 0) return undefined;
+
+  return validIds;
+};
+
+const parseOwnerId = (value) => {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  if (!isValidObjectId(trimmed)) return undefined;
+  return trimmed;
 };
 
 export const parseFilterParams = async (query) => {
-  const { storyType, isFavourite } = query;
-  const parsedStoryType = await parseStoryType(storyType);
-  const parsedIsFavourite = parseBoolean(isFavourite);
+  const filter = {};
 
-  return {
-    ...(parsedStoryType !== undefined && { storyType: parsedStoryType }),
-    ...(parsedIsFavourite !== undefined && { isFavourite: parsedIsFavourite }),
-  };
+  // ---------- CATEGORY ----------
+  const oneCategory = parseCategoryId(query.categoryId);
+  const manyCategories = parseCategoryIds(query.categoryIds);
+
+  if (manyCategories) {
+    filter.category = { $in: manyCategories };
+  } else if (oneCategory) {
+    filter.category = oneCategory;
+  }
+
+  // ---------- OWNER ----------
+  const ownerId = parseOwnerId(query.ownerId);
+  if (ownerId) {
+    filter.ownerId = ownerId;
+  }
+
+  return filter;
 };

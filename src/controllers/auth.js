@@ -7,16 +7,17 @@ import { SessionsCollection } from '../database/models/session.js';
 import { refreshUsersSession } from '../services/auth.js';
 
 const setupSession = (res, session) => {
+  const isProd = process.env.NODE_ENV === 'production';
 
   const cookieOptions = {
     httpOnly: true,
     sameSite: 'lax',
-    path: '/',       
+    path: '/',
+    secure: isProd,
   };
 
-
   res.cookie('accessToken', session.accessToken, {
-     ...cookieOptions,
+    ...cookieOptions,
     expires: new Date(Date.now() + FIFTEEN_MINUTES),
   });
 
@@ -59,26 +60,23 @@ export const loginUserController = async (req, res) => {
 };
 
 export const logoutUserController = async (req, res) => {
+  const isProd = process.env.NODE_ENV === 'production';
+
   if (req.cookies.sessionId) {
     await logoutUser(req.cookies.sessionId);
   }
-  res.clearCookie('accessToken', {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',      
-  });
-  
-  res.clearCookie('refreshToken', {
+
+  const clearOptions = {
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
-  });
-  
-  res.clearCookie('sessionId', {
-    httpOnly: true, 
-    sameSite: 'lax',
-    path: '/',
-  });
+    secure: isProd,
+  };
+
+  res.clearCookie('accessToken', clearOptions);
+  res.clearCookie('refreshToken', clearOptions);
+  res.clearCookie('sessionId', clearOptions);
+
   res.status(204).send();
 };
 

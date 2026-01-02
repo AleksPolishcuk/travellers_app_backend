@@ -1,12 +1,13 @@
 import createHttpError from 'http-errors';
-
 import {
-  createStory,
   getAllStories,
   getStoryById,
+  createStory,
   updateStoryById,
+  deleteStoryById,
   getCategories,
 } from '../services/stories.js';
+
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
@@ -31,14 +32,15 @@ export const getStoriesController = async (req, res) => {
     data: stories,
   });
 };
-export const getStoryByIdController = async (req, res, next) => {
+
+export const getStoryByIdController = async (req, res) => {
   const { storyId } = req.params;
-  // const userId = req.user._id;
   const story = await getStoryById(storyId);
 
   if (!story) {
     throw createHttpError(404, 'Story not found');
   }
+
   res.status(200).json({
     status: 200,
     message: `Successfully found story with id ${storyId}!`,
@@ -47,40 +49,85 @@ export const getStoryByIdController = async (req, res, next) => {
 };
 
 export const createStoryController = async (req, res) => {
-  const userId = req.user._id;
-  const storyData = req.body;
-    if (req.file) {
-      const imgUrl = await saveFileToCloudinary(req.file);
-      storyData.img = imgUrl;
-    }
-  const newStory = await createStory(storyData, userId);
+  /**
+   * ТЗ: storyImage (binary) required, max 2MB
+   * size limit контролює multer, тут — required.
+   */
+  if (!req.file) {
+    throw createHttpError(400, 'storyImage is required');
+  }
+
+  const imgUrl = await saveFileToCloudinary(req.file);
+
+  /**
+   * ТЗ: description, але у моделі/сервісі використовується article.
+   * Мапимо description -> article, щоб не ламати інше.
+   */
+  const storyData = {
+    img: imgUrl,
+    title: req.body.title,
+    article: req.body.description,
+    category: req.body.category,
+    // fullText у вас required у схемі story, тому ставимо як мінімум article
+    fullText: req.body.description,
+  };
+
+  const story = await createStory(storyData, req.user._id);
 
   res.status(201).json({
     status: 201,
-    message: 'Story successfully created!',
-    data: newStory,
+    message: 'Story successfully created',
+    data: story,
   });
 };
 
-export const updateStoryController = async (req, res, next) => {
+export const updateStoryController = async (req, res) => {
   const { storyId } = req.params;
-  const userId = req.user._id;
-  const updateData = req.body;
 
-  if (Object.keys(updateData).length === 0) {
-    throw createHttpError(400, 'Missing fields to update');
+  const updateData = {};
+
+  if (req.body.title) updateData.title = req.body.title;
+  if (req.body.category) updateData.category = req.body.category;
+
+  if (req.body.description) {
+    updateData.article = req.body.description;
+    updateData.fullText = req.body.description;
   }
-  const updatedStory = await updateStoryById(storyId, userId, updateData);
+
+  const updatedStory = await updateStoryById(storyId, req.user._id, updateData);
+
   if (!updatedStory) {
-    throw createHttpError(404, 'Story not found or you are not the ownerId');
+    throw createHttpError(404, 'Story not found or you are not the owner');
   }
+
   res.status(200).json({
     status: 200,
-    message: `Story with id ${storyId} successfully updated!`,
+    message: 'Story successfully updated',
+    data: updatedStory,
   });
+};
+
+export const deleteStoryByIdController = async (req, res, next) => {
+  try {
+    const { storyId } = req.params;
+    const userId = req.user._id;
+
+    const { message } = await deleteStoryById(storyId, userId);
+
+    return res.status(200).json({
+      status: 200,
+      message,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getCategoriesController = async (req, res) => {
-  const response = await getCategories();
-  res.json({ status: 200, data: response });
+  const categories = await getCategories();
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully found categories!',
+    data: categories,
+  });
 };

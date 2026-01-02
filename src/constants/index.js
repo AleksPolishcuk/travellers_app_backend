@@ -7,14 +7,14 @@ export const SORT_ORDER = {
 
 export const EMAIL_VALID = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-export const CATEGORIES = [
-  'Європа',
-  'Азія',
-  'Америка',
-  'Африка',
-  'Пустелі',
-  'Україна',
-];
+// export const CATEGORIES = [
+//   'Європа',
+//   'Азія',
+//   'Америка',
+//   'Африка',
+//   'Пустелі',
+//   'Україна',
+// ];
 
 export const SMTP = {
   SMTP_HOST: 'SMTP_HOST',

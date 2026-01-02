@@ -1,9 +1,35 @@
 import { HttpError } from 'http-errors';
+import multer from 'multer';
 
 export const errorHandler = (err, req, res, next) => {
-  // Перевірка, чи отримали ми помилку від createHttpError
   console.error(err);
-  
+
+  // Multer errors (file too large, etc.)
+  if (err instanceof multer.MulterError) {
+    let message = err.message;
+
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      message = 'File is too large';
+    }
+
+    res.status(400).json({
+      status: 400,
+      message: 'Bad Request',
+      data: { message },
+    });
+    return;
+  }
+
+  // File filter errors (Only image files...)
+  if (err && err.message === 'Only image files are allowed') {
+    res.status(400).json({
+      status: 400,
+      message: 'Bad Request',
+      data: { message: err.message },
+    });
+    return;
+  }
+
   if (err instanceof HttpError) {
     res.status(err.status).json({
       status: err.status,
@@ -12,8 +38,10 @@ export const errorHandler = (err, req, res, next) => {
     });
     return;
   }
+
   res.status(500).json({
+    status: 500,
     message: 'Something went wrong',
-    data: err.message,
+    data: err?.message,
   });
 };

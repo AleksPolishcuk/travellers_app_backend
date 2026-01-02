@@ -11,4 +11,22 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage });
+const imageFileFilter = (req, file, cb) => {
+  if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+    cb(new Error('Only image files are allowed'), false);
+    return;
+  }
+  cb(null, true);
+};
+
+export const uploadStoryImage = multer({
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+});
+
+export const uploadAvatar = multer({
+  storage,
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 500 * 1024 }, // 500KB
+});

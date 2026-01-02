@@ -13,6 +13,7 @@ export const startServer = () => {
   const app = express();
 
   app.use(cookieParser());
+
   app.use(
     cors({
       origin: function (origin, callback) {
@@ -31,12 +32,9 @@ export const startServer = () => {
         }
       },
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     }),
   );
-
-
-  
 
   app.use(
     express.json({
@@ -47,9 +45,6 @@ export const startServer = () => {
 
   app.use('/api-docs', swaggerDocs());
 
-app.use('/api-docs', swaggerDocs());
-
- 
   app.use(router);
   app.use('/', notFoundHandler);
   app.use(errorHandler);

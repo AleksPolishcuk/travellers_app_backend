@@ -2,6 +2,7 @@ import { SORT_ORDER } from '../constants/index.js';
 import { Category } from '../database/models/category.js';
 import { StoriesCollection } from '../database/models/story.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import createHttpError from 'http-errors';
 
 export const getAllStories = async ({
   page = 1,
@@ -34,8 +35,8 @@ export const getAllStories = async ({
 
 export const getStoryById = async (storyId) => {
   const story = await StoriesCollection.findById(storyId)
-  .populate('ownerId', 'name avatarUrl description ')
-  .populate('category', 'name');
+    .populate('ownerId', 'name avatarUrl description ')
+    .populate('category', 'name');
   return story;
 };
 
@@ -54,6 +55,24 @@ export const updateStoryById = async (storyId, userId, updateData) => {
     { new: true },
   );
   return updatedStory;
+};
+export const deleteStoryById = async (storyId, userId) => {
+  const story = await StoriesCollection.findById(storyId);
+
+  if (!story) {
+    throw createHttpError(404, 'Story not found');
+  }
+
+  if (story.ownerId.toString() !== userId.toString()) {
+    throw createHttpError(403, 'You are not allowed to delete this story');
+  }
+
+  await StoriesCollection.findByIdAndDelete(storyId);
+
+  return {
+    message: 'Story deleted successfully',
+    story,
+  };
 };
 
 export const getCategories = async () => {

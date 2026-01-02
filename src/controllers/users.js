@@ -4,6 +4,9 @@ import {
   getMeUser,
   updateUserData,
   updateUserAvatar,
+  addFavoriteStory,
+  removeFavoriteStory,
+  getFavoriteStories,
   requestResetToken,
   resetPasword,
 } from '../services/users.js';
@@ -25,7 +28,7 @@ export const getUsersController = async (req, res) => {
   });
 };
 
-export const getUserByIdController = async (req, res, next) => {
+export const getUserByIdController = async (req, res) => {
   const { userId } = req.params;
   const result = await getUserById(userId);
   if (!result) {
@@ -54,6 +57,11 @@ export const getMeUserController = async (req, res) => {
 
 export const patchUserController = async (req, res, next) => {
   const { userId } = req.params;
+
+  if (req.user._id.toString() !== userId) {
+    return next(createHttpError(403, 'You can only update your own profile'));
+  }
+
   const result = await updateUserData(userId, req.body);
 
   if (!result) {
@@ -68,27 +76,32 @@ export const patchUserController = async (req, res, next) => {
   });
 };
 
-export const updateUserAvatarController = async (req, res, next) => {
+export const updateUserAvatarController = async (req, res) => {
   const { userId } = req.params;
 
   if (req.user._id.toString() !== userId) {
     throw createHttpError(403, 'You can only update your own avatar');
   }
 
-  const updateData = {};
-
-  if (req.file) {
-    const newAvatarUrl = await saveFileToCloudinary(req.file);
-    updateData.avatarUrl = newAvatarUrl;
+  /**
+   * ТЗ: avatar binary required, max 500kB
+   * size limit забезпечує multer, тут — required
+   */
+  if (!req.file) {
+    throw createHttpError(400, 'avatar is required');
   }
 
-  if (req.body.description) {
-    updateData.description = req.body.description;
+  // ТЗ: description required (max 150)
+  if (!req.body.description) {
+    throw createHttpError(400, 'description is required');
   }
 
-  if (Object.keys(updateData).length === 0) {
-    throw createHttpError(400, 'No data provided for update');
-  }
+  const newAvatarUrl = await saveFileToCloudinary(req.file);
+
+  const updateData = {
+    avatarUrl: newAvatarUrl,
+    description: req.body.description,
+  };
 
   const updatedUser = await updateUserAvatar(userId, updateData);
 
@@ -114,9 +127,9 @@ export const getTravellersController = async (req, res, next) => {
     const limitNumber = parseInt(limit);
 
     if (
-      isNaN(pageNumber) ||
+      Number.isNaN(pageNumber) ||
       pageNumber < 1 ||
-      isNaN(limitNumber) ||
+      Number.isNaN(limitNumber) ||
       limitNumber < 1
     ) {
       return next(createHttpError(400, 'Invalid pagination parameters'));
@@ -135,6 +148,7 @@ export const getTravellersController = async (req, res, next) => {
       limitNumber,
       pageNumber,
     );
+
     res.status(200).json({
       status: 200,
       message: 'Successfully get travellers!',
@@ -146,6 +160,46 @@ export const getTravellersController = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const addFavoriteStoryController = async (req, res) => {
+  const userId = req.user._id;
+  const { storyId } = req.params;
+
+  const favorites = await addFavoriteStory(userId, storyId);
+
+  res.status(200).json({
+    status: 200,
+    message: 'Story added to favorites',
+    data: favorites,
+  });
+};
+
+export const removeFavoriteStoryController = async (req, res) => {
+  const userId = req.user._id;
+  const { storyId } = req.params;
+
+  const favorites = await removeFavoriteStory(userId, storyId);
+
+  res.status(200).json({
+    status: 200,
+    message: 'Story removed from favorites',
+    data: favorites,
+  });
+};
+
+export const getFavoriteStoriesController = async (req, res) => {
+  const userId = req.user._id;
+
+  const { page, perPage } = parsePaginationParams(req.query);
+
+  const result = await getFavoriteStories(userId, { page, perPage });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully found favorite stories!',
+    data: result,
+  });
 };
 
 export const requestResetTokenController = async (req, res) => {
