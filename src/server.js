@@ -12,27 +12,28 @@ const PORT = Number(getEnvVar('PORT'));
 export const startServer = () => {
   const app = express();
 
+  app.set('trust proxy', 1);
+
   app.use(cookieParser());
+
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'https://travellers-app-frontend.vercel.app',
+  ];
 
   app.use(
     cors({
-      origin: function (origin, callback) {
-        const allowedOrigins = [
-          'http://localhost:3000',
-          'https://travellers-app-frontend.vercel.app',
-        ];
+      origin(origin, callback) {
+        if (!origin) return callback(null, true); // SSR/health-check
+        if (allowedOrigins.includes(origin)) return callback(null, true);
 
-        if (!origin) return callback(null, true);
-
-        if (allowedOrigins.includes(origin)) {
-          return callback(null, true);
-        } else {
-          console.log('CORS blocked for origin:', origin);
-          return callback(new Error('Not allowed by CORS'), false);
-        }
+        console.log('CORS blocked for origin:', origin);
+        return callback(new Error('Not allowed by CORS'), false);
       },
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      optionsSuccessStatus: 204,
     }),
   );
 
