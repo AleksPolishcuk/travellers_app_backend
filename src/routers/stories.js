@@ -37,7 +37,7 @@ router.get('/saved', authenticate, ctrlWrapper(getFavoriteStoriesController));
 router.get('/:storyId', isValidId, ctrlWrapper(getStoryByIdController));
 
 /**
- * PRIVATE — SAVED / FAVORITES (ТЗ)
+ * PRIVATE — SAVED / FAVORITES
  */
 
 router.post(

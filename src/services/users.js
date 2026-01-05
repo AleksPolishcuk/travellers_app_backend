@@ -11,11 +11,6 @@ import path from 'node:path';
 import {sendEmail} from '../utils/sendEmail.js';
 import { SessionsCollection } from '../database/models/session.js';
 
-/**
- * =========================
- * USERS базові (як у тебе)
- * =========================
- */
 export const getAllUsers = async ({ page, perPage }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
@@ -68,12 +63,6 @@ export const updateUserAvatar = async (userId, updateData) => {
   return updatedUser;
 };
 
-/**
- * =========================
- * FAVORITES (1:1) = savedStories
- * =========================
- */
-
 export const addFavoriteStory = async (userId, storyId) => {
   const user = await UsersCollection.findById(userId).select('savedStories');
   if (!user) throw createHttpError(404, 'User not found');
@@ -89,7 +78,6 @@ export const addFavoriteStory = async (userId, storyId) => {
   user.savedStories.push(storyId);
   await user.save();
 
-  // sync favoriteCount
   await StoriesCollection.findByIdAndUpdate(storyId, {
     $inc: { favoriteCount: 1 },
   });
@@ -112,7 +100,6 @@ export const removeFavoriteStory = async (userId, storyId) => {
 
   await user.save();
 
-  // sync favoriteCount (не даємо піти в мінус)
   const story = await StoriesCollection.findById(storyId).select(
     'favoriteCount',
   );
@@ -162,16 +149,10 @@ export const getFavoriteStories = async (userId, { page, perPage }) => {
   };
 };
 
-/**
- * =========================
- * RESET PASSWORD (як у тебе; не чіпаю тут)
- * =========================
- */
 export const requestResetToken = async (email) => {
   const user = await UsersCollection.findOne({ email });
   if (!user) throw createHttpError(404, 'User not found');
 
-  // У тебе тут помилка (jwt.verify замість jwt.sign) — не змінюю, бо ти не просив.
   const resetToken = jwt.verify(
     {
       sub: user._id,

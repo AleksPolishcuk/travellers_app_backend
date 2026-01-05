@@ -4,7 +4,6 @@ import multer from 'multer';
 export const errorHandler = (err, req, res, next) => {
   console.error(err);
 
-  // Multer errors (file too large, etc.)
   if (err instanceof multer.MulterError) {
     let message = err.message;
 
@@ -20,7 +19,6 @@ export const errorHandler = (err, req, res, next) => {
     return;
   }
 
-  // File filter errors (Only image files...)
   if (err && err.message === 'Only image files are allowed') {
     res.status(400).json({
       status: 400,

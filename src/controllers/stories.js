@@ -49,26 +49,17 @@ export const getStoryByIdController = async (req, res) => {
 };
 
 export const createStoryController = async (req, res) => {
-  /**
-   * ТЗ: storyImage (binary) required, max 2MB
-   * size limit контролює multer, тут — required.
-   */
   if (!req.file) {
     throw createHttpError(400, 'storyImage is required');
   }
 
   const imgUrl = await saveFileToCloudinary(req.file);
 
-  /**
-   * ТЗ: description, але у моделі/сервісі використовується article.
-   * Мапимо description -> article, щоб не ламати інше.
-   */
   const storyData = {
     img: imgUrl,
     title: req.body.title,
     article: req.body.description,
     category: req.body.category,
-    // fullText у вас required у схемі story, тому ставимо як мінімум article
     fullText: req.body.description,
   };
 

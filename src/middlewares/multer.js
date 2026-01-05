@@ -22,11 +22,11 @@ const imageFileFilter = (req, file, cb) => {
 export const uploadStoryImage = multer({
   storage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  limits: { fileSize: 2 * 1024 * 1024 },
 });
 
 export const uploadAvatar = multer({
   storage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 500 * 1024 }, // 500KB
+  limits: { fileSize: 500 * 1024 },
 });
