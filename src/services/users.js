@@ -8,8 +8,9 @@ import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import path from 'node:path';
-import {sendEmail} from '../utils/sendEmail.js';
+import { sendEmail } from '../utils/sendEmail.js';
 import { SessionsCollection } from '../database/models/session.js';
+import bcrypt from 'bcryptjs';
 
 export const getAllUsers = async ({ page, perPage }) => {
   const limit = perPage;
@@ -164,22 +165,22 @@ export const requestResetToken = async (email) => {
 
   const templatePath = path.join(
     TEMP_UPLOAD_DIR,
-    'template-request-email-token.html'
+    'template-request-reset-token.html',
   );
   const templateSource = (await fs.readFile(templatePath)).toString();
   const template = handlebars.compile(templateSource);
 
   const html = template({
     name: user.name,
-    link: `${getEnvVar('APP_DOMAIN')}/reset-email?token=${resetToken}`,
+    link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
   });
 
   try {
     await sendEmail({
       from: getEnvVar(SMTP.SMTP_FROM),
       to: email,
-      subject:  'Reset your email',
-      html
+      subject: 'Reset your password',
+      html,
     });
   } catch (error) {
     if (error.status === 500) {
@@ -191,9 +192,7 @@ export const requestResetToken = async (email) => {
   }
 };
 
-
-
-export const resetEmail = async (payload) =>{
+export const resetPassword = async (payload) => {
   let entries;
 
   try {
@@ -203,18 +202,18 @@ export const resetEmail = async (payload) =>{
     throw error;
   }
 
-  const user = await UsersCollection.findOne(
-    {_id: entries.sub},
-  );
+  const user = await UsersCollection.findOne({ _id: entries.sub });
 
   if (!user) throw createHttpError(404, 'User not found');
 
   const isExpired = new Date() > payload.token;
   if (isExpired) throw createHttpError(401, 'Token is expired or invalid');
 
+  const encryptedPassword = await bcrypt.hash(payload.newPassword, 10);
+
   await UsersCollection.findOneAndUpdate(
-    {_id: user._id},
-    {email: payload.email} 
+    { _id: user._id },
+    { password: encryptedPassword },
   );
 
   await SessionsCollection.deleteOne({ userId: user._id });
