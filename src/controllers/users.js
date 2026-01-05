@@ -8,7 +8,7 @@ import {
   removeFavoriteStory,
   getFavoriteStories,
   requestResetToken,
-  resetPasword,
+  resetEmail,
 } from '../services/users.js';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -209,12 +209,14 @@ export const requestResetTokenController = async (req, res) => {
   });
 };
 
-export const resetPasswordController = async (req, res) => {
-  await resetPasword(req.body);
+
+
+export const resetEmailController = async (req, res) =>{
+  await resetEmail(req.body);
 
   res.json({
     status: 200,
-    message: 'Successfully resset password!',
+    message: 'Successfully reset Email!',
     data: {},
   });
 };

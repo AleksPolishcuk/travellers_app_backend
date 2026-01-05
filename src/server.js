@@ -19,7 +19,7 @@ export const startServer = () => {
       origin: function (origin, callback) {
         const allowedOrigins = [
           'http://localhost:3000',
-          'https://travellers-app-frontend-qx5p.onrender.com',
+          'https://travellers-app-frontend.vercel.app',
         ];
 
         if (!origin) return callback(null, true);
