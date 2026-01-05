@@ -8,7 +8,7 @@ import {
   removeFavoriteStory,
   getFavoriteStories,
   requestResetToken,
-  resetEmail,
+  resetPassword,
 } from '../services/users.js';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -83,12 +83,10 @@ export const updateUserAvatarController = async (req, res) => {
     throw createHttpError(403, 'You can only update your own avatar');
   }
 
- 
   if (!req.file) {
     throw createHttpError(400, 'avatar is required');
   }
 
- 
   if (!req.body.description) {
     throw createHttpError(400, 'description is required');
   }
@@ -209,14 +207,12 @@ export const requestResetTokenController = async (req, res) => {
   });
 };
 
-
-
-export const resetEmailController = async (req, res) =>{
-  await resetEmail(req.body);
+export const resetPasswordController = async (req, res) => {
+  await resetPassword(req.body);
 
   res.json({
     status: 200,
-    message: 'Successfully reset Email!',
+    message: 'Successfully reset password!',
     data: {},
   });
 };

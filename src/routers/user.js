@@ -1,5 +1,4 @@
 import { Router } from 'express';
-
 import {
   getUsersController,
   getUserByIdController,
@@ -8,80 +7,69 @@ import {
   updateUserAvatarController,
   getTravellersController,
   requestResetTokenController,
-  resetEmailController,
+  resetPasswordController,
+  addFavoriteStoryController,
+  removeFavoriteStoryController,
+  getFavoriteStoriesController,
 } from '../controllers/users.js';
-
 import { validateBody } from '../middlewares/validateBody.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { isValidId } from '../middlewares/isValidId.js';
-import { upload } from '../middlewares/multer.js';
-import { requestResetTokenSchema, resetEmailSchema } from '../validation/users.js';
-const router = Router();
-
+import { uploadAvatar } from '../middlewares/multer.js';
 import {
   requestResetTokenSchema,
   resetPaswordSchema,
   updateTravelerSchema,
 } from '../validation/users.js';
-
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-
 const router = Router();
-
-/**
- * PRIVATE
- */
-router.get('/me', authenticate, ctrlWrapper(getMeUserController));
-
-/**
- * PUBLIC
- */
-router.get('/', ctrlWrapper(getUsersController));
+/** * PRIVATE */ router.get(
+  '/me',
+  authenticate,
+  ctrlWrapper(getMeUserController),
+);
+/** * PRIVATE — SAVED/FAVORITES * (залишаємо як у тебе: /api/users/saved, /api/users/:storyId/saved) */ router.get(
+  '/saved',
+  authenticate,
+  ctrlWrapper(getFavoriteStoriesController),
+);
+router.post(
+  '/saved/:storyId',
+  authenticate,
+  isValidId,
+  ctrlWrapper(addFavoriteStoryController),
+);
+router.delete(
+  '/saved/:storyId',
+  authenticate,
+  isValidId,
+  ctrlWrapper(removeFavoriteStoryController),
+);
+/** * PUBLIC */ router.get('/', ctrlWrapper(getUsersController));
 router.get('/travellers', ctrlWrapper(getTravellersController));
 router.get('/:userId', isValidId, ctrlWrapper(getUserByIdController));
-
-/**
- * PRIVATE — update profile (traveler form)
- */
-router.patch(
+/** * PRIVATE — update profile (traveler form) */ router.patch(
   '/:userId',
   isValidId,
   authenticate,
   validateBody(updateTravelerSchema),
   ctrlWrapper(patchUserController),
 );
-
-/**
- * PRIVATE — update avatar
- */
-router.patch(
+/** * PRIVATE — update avatar */ router.patch(
   '/:userId/avatar',
   isValidId,
   authenticate,
   uploadAvatar.single('avatar'),
   ctrlWrapper(updateUserAvatarController),
 );
-
-/**
- * PASSWORD RESET
- */
-router.post(
+/** * PASSWORD RESET */ router.post(
   '/user/send-request-reset-password',
   validateBody(requestResetTokenSchema),
   ctrlWrapper(requestResetTokenController),
 );
-
 router.post(
   '/user/reset-password',
   validateBody(resetPaswordSchema),
   ctrlWrapper(resetPasswordController),
 );
-
-router.get('/', getUsersController);
-
-router.get('/:userId', isValidId, getUserByIdController);
-
-router.get('/travellers', getTravellersController);
-router.post('/user/send-request-reset-email',validateBody(requestResetTokenSchema), requestResetTokenController);
-router.post('/user/reset-email', validateBody(resetEmailSchema), resetEmailController);
 export default router;
