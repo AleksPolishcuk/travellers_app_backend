@@ -83,15 +83,12 @@ export const updateUserAvatarController = async (req, res) => {
     throw createHttpError(403, 'You can only update your own avatar');
   }
 
-  /**
-   * ТЗ: avatar binary required, max 500kB
-   * size limit забезпечує multer, тут — required
-   */
+ 
   if (!req.file) {
     throw createHttpError(400, 'avatar is required');
   }
 
-  // ТЗ: description required (max 150)
+ 
   if (!req.body.description) {
     throw createHttpError(400, 'description is required');
   }

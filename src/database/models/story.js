@@ -49,9 +49,4 @@ const storySchema = new Schema(
   },
 );
 
-/**
- * ВАЖЛИВО:
- * - model name: 'stories' (щоб збігалося з ref: 'stories' у User/SavedArticle)
- * - collection name: 'stories'
- */
 export const StoriesCollection = model('stories', storySchema, 'stories');
