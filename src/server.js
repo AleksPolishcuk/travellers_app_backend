@@ -1,3 +1,4 @@
+// startServer.js - критичні зміни для cookies
 import { getEnvVar } from './utils/getEnvVar.js';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -13,7 +14,6 @@ export const startServer = () => {
   const app = express();
 
   app.set('trust proxy', 1);
-
   app.use(cookieParser());
 
   const allowedOrigins = [
@@ -23,16 +23,25 @@ export const startServer = () => {
 
   app.use(
     cors({
-      origin(origin, callback) {
-        if (!origin) return callback(null, true); // SSR/health-check
-        if (allowedOrigins.includes(origin)) return callback(null, true);
+      origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Allowing origin in dev:', origin);
+          return callback(null, true);
+        }
 
         console.log('CORS blocked for origin:', origin);
         return callback(new Error('Not allowed by CORS'), false);
       },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+      exposedHeaders: ['set-cookie'],
       optionsSuccessStatus: 204,
     }),
   );
@@ -45,12 +54,12 @@ export const startServer = () => {
   );
 
   app.use('/api-docs', swaggerDocs());
-
   app.use(router);
   app.use('/', notFoundHandler);
   app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log(`CORS enabled for origins: ${allowedOrigins.join(', ')}`);
   });
 };

@@ -22,17 +22,16 @@ import {
   updateTravelerSchema,
 } from '../validation/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
 const router = Router();
-/** * PRIVATE */ router.get(
-  '/me',
-  authenticate,
-  ctrlWrapper(getMeUserController),
-);
-/** * PRIVATE — SAVED/FAVORITES * (залишаємо як у тебе: /api/users/saved, /api/users/:storyId/saved) */ router.get(
-  '/saved',
-  authenticate,
-  ctrlWrapper(getFavoriteStoriesController),
-);
+
+/** * PRIVATE */
+
+router.get('/me', authenticate, ctrlWrapper(getMeUserController));
+
+/** * PRIVATE — SAVED/FAVORITES  */
+
+router.get('/saved', authenticate, ctrlWrapper(getFavoriteStoriesController));
 router.post(
   '/saved/:storyId',
   authenticate,
@@ -45,24 +44,36 @@ router.delete(
   isValidId,
   ctrlWrapper(removeFavoriteStoryController),
 );
-/** * PUBLIC */ router.get('/', ctrlWrapper(getUsersController));
+
+/** * PUBLIC */
+
+router.get('/', ctrlWrapper(getUsersController));
 router.get('/travellers', ctrlWrapper(getTravellersController));
 router.get('/:userId', isValidId, ctrlWrapper(getUserByIdController));
-/** * PRIVATE — update profile (traveler form) */ router.patch(
+
+/** * PRIVATE — update profile (traveler form) */
+
+router.patch(
   '/:userId',
   isValidId,
   authenticate,
   validateBody(updateTravelerSchema),
   ctrlWrapper(patchUserController),
 );
-/** * PRIVATE — update avatar */ router.patch(
+
+/** * PRIVATE — update avatar */
+
+router.patch(
   '/:userId/avatar',
   isValidId,
   authenticate,
   uploadAvatar.single('avatar'),
   ctrlWrapper(updateUserAvatarController),
 );
-/** * PASSWORD RESET */ router.post(
+
+/** * PASSWORD RESET */
+
+router.post(
   '/user/send-request-reset-password',
   validateBody(requestResetTokenSchema),
   ctrlWrapper(requestResetTokenController),

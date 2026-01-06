@@ -11,7 +11,7 @@ const setupSession = (res, session) => {
 
   const cookieOptions = {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     path: '/',
     secure: isProd,
   };
